@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { SummaryCard } from "@/app/components/dashboard/summary-card";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const now = new Date();
 
