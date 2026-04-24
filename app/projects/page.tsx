@@ -1,10 +1,11 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import CreateProjectForm from "@/components/projects/create-project-form";
 import ProjectList from "@/components/projects/project-list";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Projects — Task Tracker",
 };
 

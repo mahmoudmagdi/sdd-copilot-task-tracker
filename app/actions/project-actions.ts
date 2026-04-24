@@ -18,7 +18,7 @@ export async function createProject(
 ): Promise<CreateProjectState> {
   const raw = {
     name: formData.get("name"),
-    description: formData.get("description") || undefined,
+    description: formData.get("description") ?? undefined,
   };
 
   const parsed = createProjectSchema.safeParse(raw);
