@@ -1,20 +1,23 @@
 "use client";
 
 import { useActionState } from "react";
-import { createProject } from "@/app/actions/project-actions";
+import { createProject, CreateProjectState } from "@/app/actions/project-actions";
 
-type State = { error?: string; success?: boolean } | null;
+const initialState: CreateProjectState = {};
 
-export function CreateProjectForm() {
-  const [state, formAction, isPending] = useActionState<State, FormData>(
+export default function CreateProjectForm() {
+  const [state, formAction, isPending] = useActionState(
     createProject,
-    null
+    initialState,
   );
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <label htmlFor="name" className="text-sm font-medium text-zinc-700">
+        <label
+          htmlFor="name"
+          className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+        >
           Project Name <span className="text-red-500">*</span>
         </label>
         <input
@@ -22,31 +25,43 @@ export function CreateProjectForm() {
           name="name"
           type="text"
           required
-          maxLength={100}
-          className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-500"
-          placeholder="My project"
+          placeholder="My Project"
+          className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-50"
         />
+        {state.errors?.name && (
+          <p className="text-xs text-red-500">{state.errors.name[0]}</p>
+        )}
       </div>
+
       <div className="flex flex-col gap-1">
-        <label htmlFor="description" className="text-sm font-medium text-zinc-700">
+        <label
+          htmlFor="description"
+          className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+        >
           Description
         </label>
         <textarea
           id="description"
           name="description"
-          maxLength={500}
           rows={3}
-          className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-500"
           placeholder="Optional description"
+          className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-50"
         />
+        {state.errors?.description && (
+          <p className="text-xs text-red-500">{state.errors.description[0]}</p>
+        )}
       </div>
-      {state?.error && (
-        <p className="text-sm text-red-600">{state.error}</p>
+
+      {state.message && (
+        <p className="text-xs text-green-600 dark:text-green-400">
+          {state.message}
+        </p>
       )}
+
       <button
         type="submit"
         disabled={isPending}
-        className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-50"
+        className="self-start rounded-full bg-zinc-900 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
       >
         {isPending ? "Creating…" : "Create Project"}
       </button>

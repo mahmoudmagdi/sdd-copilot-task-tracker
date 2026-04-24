@@ -1,25 +1,38 @@
 "use client";
 
-import { useActionState } from "react";
+import { useRef, useState } from "react";
 import { createTask } from "@/app/actions/task-actions";
-
-type State = { error?: string; success?: boolean } | null;
 
 interface CreateTaskFormProps {
   projectId: string;
 }
 
-export function CreateTaskForm({ projectId }: CreateTaskFormProps) {
-  const boundAction = createTask.bind(null, projectId);
-  const [state, formAction, isPending] = useActionState<State, FormData>(
-    boundAction,
-    null
-  );
+export default function CreateTaskForm({ projectId }: CreateTaskFormProps) {
+  const formRef = useRef<HTMLFormElement>(null);
+  const [errors, setErrors] = useState<Record<string, string[]>>({});
+  const [pending, setPending] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setPending(true);
+    setErrors({});
+
+    const formData = new FormData(e.currentTarget);
+    const result = await createTask(projectId, formData);
+
+    if (result.error) {
+      setErrors(result.error as Record<string, string[]>);
+    } else {
+      formRef.current?.reset();
+    }
+
+    setPending(false);
+  }
 
   return (
-    <form action={formAction} className="flex flex-col gap-4">
+    <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-3">
       <div className="flex flex-col gap-1">
-        <label htmlFor="title" className="text-sm font-medium text-zinc-700">
+        <label htmlFor="title" className="text-sm font-medium">
           Title <span className="text-red-500">*</span>
         </label>
         <input
@@ -27,34 +40,37 @@ export function CreateTaskForm({ projectId }: CreateTaskFormProps) {
           name="title"
           type="text"
           required
-          maxLength={150}
-          className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-500"
+          className="rounded border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-800"
           placeholder="Task title"
         />
+        {errors.title && (
+          <p className="text-xs text-red-500">{errors.title[0]}</p>
+        )}
       </div>
+
       <div className="flex flex-col gap-1">
-        <label htmlFor="task-description" className="text-sm font-medium text-zinc-700">
+        <label htmlFor="description" className="text-sm font-medium">
           Description
         </label>
         <textarea
-          id="task-description"
+          id="description"
           name="description"
-          maxLength={1000}
           rows={2}
-          className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-500"
+          className="rounded border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-800"
           placeholder="Optional description"
         />
       </div>
-      <div className="flex gap-4">
-        <div className="flex flex-1 flex-col gap-1">
-          <label htmlFor="status" className="text-sm font-medium text-zinc-700">
-            Status
+
+      <div className="grid grid-cols-2 gap-3">
+        <div className="flex flex-col gap-1">
+          <label htmlFor="status" className="text-sm font-medium">
+            Status <span className="text-red-500">*</span>
           </label>
           <select
             id="status"
             name="status"
             defaultValue="TODO"
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-500"
+            className="rounded border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-800"
           >
             <option value="TODO">Todo</option>
             <option value="IN_PROGRESS">In Progress</option>
@@ -62,15 +78,16 @@ export function CreateTaskForm({ projectId }: CreateTaskFormProps) {
             <option value="CANCELLED">Cancelled</option>
           </select>
         </div>
-        <div className="flex flex-1 flex-col gap-1">
-          <label htmlFor="priority" className="text-sm font-medium text-zinc-700">
-            Priority
+
+        <div className="flex flex-col gap-1">
+          <label htmlFor="priority" className="text-sm font-medium">
+            Priority <span className="text-red-500">*</span>
           </label>
           <select
             id="priority"
             name="priority"
             defaultValue="MEDIUM"
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-500"
+            className="rounded border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-800"
           >
             <option value="LOW">Low</option>
             <option value="MEDIUM">Medium</option>
@@ -78,26 +95,25 @@ export function CreateTaskForm({ projectId }: CreateTaskFormProps) {
           </select>
         </div>
       </div>
+
       <div className="flex flex-col gap-1">
-        <label htmlFor="dueDate" className="text-sm font-medium text-zinc-700">
+        <label htmlFor="dueDate" className="text-sm font-medium">
           Due Date
         </label>
         <input
           id="dueDate"
           name="dueDate"
           type="date"
-          className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-500"
+          className="rounded border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-800"
         />
       </div>
-      {state?.error && (
-        <p className="text-sm text-red-600">{state.error}</p>
-      )}
+
       <button
         type="submit"
-        disabled={isPending}
-        className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-50"
+        disabled={pending}
+        className="rounded bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
       >
-        {isPending ? "Creating…" : "Add Task"}
+        {pending ? "Creating…" : "Create Task"}
       </button>
     </form>
   );

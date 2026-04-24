@@ -4,21 +4,39 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { createProjectSchema } from "@/lib/validations/project";
 
-export async function createProject(formData: FormData) {
+export type CreateProjectState = {
+  errors?: {
+    name?: string[];
+    description?: string[];
+  };
+  message?: string;
+};
+
+export async function createProject(
+  _prevState: CreateProjectState,
+  formData: FormData,
+): Promise<CreateProjectState> {
   const raw = {
     name: formData.get("name"),
-    description: formData.get("description") || undefined,
+    description: formData.get("description") ?? undefined,
   };
 
   const parsed = createProjectSchema.safeParse(raw);
+
   if (!parsed.success) {
-    return { error: parsed.error.errors[0].message };
+    return {
+      errors: parsed.error.flatten().fieldErrors,
+    };
   }
 
   await prisma.project.create({
-    data: parsed.data,
+    data: {
+      name: parsed.data.name,
+      description: parsed.data.description,
+    },
   });
 
   revalidatePath("/projects");
-  return { success: true };
+
+  return { message: "Project created." };
 }

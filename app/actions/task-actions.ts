@@ -14,8 +14,9 @@ export async function createTask(projectId: string, formData: FormData) {
   };
 
   const parsed = createTaskSchema.safeParse(raw);
+
   if (!parsed.success) {
-    return { error: parsed.error.errors[0].message };
+    return { error: parsed.error.flatten().fieldErrors };
   }
 
   await prisma.task.create({
@@ -29,9 +30,9 @@ export async function createTask(projectId: string, formData: FormData) {
   return { success: true };
 }
 
-export async function updateTaskStatus(taskId: string, projectId: string, formData: FormData) {
-  const status = formData.get("status");
+export async function updateTaskStatus(taskId: string, projectId: string, status: string) {
   const parsed = TaskStatusEnum.safeParse(status);
+
   if (!parsed.success) {
     return { error: "Invalid status" };
   }
