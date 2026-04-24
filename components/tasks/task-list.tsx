@@ -69,7 +69,7 @@ export default function TaskList({ tasks, projectId }: TaskListProps) {
               currentStatus={task.status}
             />
             <span
-              className={`rounded px-2 py-0.5 text-xs font-medium ${PRIORITY_COLORS[task.priority] ?? ""}`}
+              className={`rounded px-2 py-0.5 text-xs font-medium ${PRIORITY_COLORS[task.priority] ?? "bg-zinc-100 text-zinc-600 dark:bg-zinc-700 dark:text-zinc-300"}`}
             >
               {task.priority}
             </span>
