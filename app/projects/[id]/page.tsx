@@ -30,9 +30,10 @@ export default async function ProjectPage({
     notFound();
   }
 
+  const lowerQuery = query.toLowerCase();
   const filteredTasks = query
     ? project.tasks.filter((task) =>
-        task.title.toLowerCase().includes(query.toLowerCase()),
+        task.title.toLowerCase().includes(lowerQuery),
       )
     : project.tasks;
 
