@@ -29,6 +29,7 @@ The user can:
 The user can:
 
 - View tasks inside a project
+- Search tasks by title inside a project
 - Create a task
 - Change task status
 - Delete a task
@@ -75,6 +76,7 @@ Shows project details and task list.
 
 User can:
 
+- Search tasks by title using `?q=`
 - Add task
 - Change task status
 - Delete task

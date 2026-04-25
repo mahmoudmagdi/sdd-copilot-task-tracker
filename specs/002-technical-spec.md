@@ -20,6 +20,16 @@
 - Keep server actions in `src/app/actions`.
 - Keep reusable UI components in `src/components`.
 
+## Project Task Search
+
+- Scope is limited to `/projects/[id]`.
+- Search field is rendered above the project task list.
+- Query is stored in URL search params using `q`.
+- Search is case-insensitive and matches task title only.
+- Empty or missing `q` shows all project tasks.
+- Refreshing the page keeps the filter because URL state is source of truth.
+- Existing task create, status update, and delete flows must continue working with or without `q`.
+
 ## Data Models
 
 ### Project

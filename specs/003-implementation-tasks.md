@@ -113,6 +113,42 @@ Acceptance Criteria:
 
 - Task list refreshes after changes.
 
+## Task 3.1: Task Search in Project Details
+
+Scope:
+
+- Add task title search on `/projects/[id]`.
+
+- Add a search input above the task list.
+
+- Persist active search in URL query `?q=`.
+
+- Apply case-insensitive title filtering.
+
+- Show all tasks when search is empty.
+
+- Keep existing create, delete, and status update behaviors working.
+
+Files expected:
+
+- `src/app/projects/[id]/page.tsx`
+
+- `src/components/tasks/task-list.tsx`
+
+Acceptance Criteria:
+
+- User can type a task title search query.
+
+- Task list updates based on the query.
+
+- URL contains `?q=value` when search is active.
+
+- Clearing the search removes the filter.
+
+- Refreshing the page keeps the same filtered result.
+
+- Existing task actions still work.
+
 ## Task 4: Dashboard
 
 Scope:
