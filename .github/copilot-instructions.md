@@ -54,3 +54,8 @@ Every PR should include:
 - Validation performed
 - Known limitations or assumptions
 - Confirmation that the implementation follows the relevant spec
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+<!-- SPECKIT END -->
